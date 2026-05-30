@@ -20,5 +20,5 @@ export default async function Home() {
     }))
     .sort((a, b) => b.score - a.score);
 
-  return <ClientHome rankings={rankings} />;
+  return <ClientHome people={rankings} />;
 }
