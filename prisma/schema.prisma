@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  votesGiven    Vote[] @relation("VoteActor")
+  votesReceived Vote[] @relation("VoteTarget")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+
+  actorId   String
+  targetId  String
+
+  points    Int
+  reason    String?
+  comment   String?
+
+  createdAt DateTime @default(now())
+
+  actor Person @relation("VoteActor", fields: [actorId], references: [id])
+  target Person @relation("VoteTarget", fields: [targetId], references: [id])
+
+  @@index([createdAt])
+}
