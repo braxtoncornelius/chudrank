@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic"ximport { prisma } from "@/lib/prisma";
 import ClientHome from "./client-home";
 
 export default async function Home() {
