@@ -14,7 +14,7 @@ export default async function Home() {
     .map((person) => ({
       ...person,
       score: person.votesReceived.reduce(
-        (sum, vote) => sum + vote.score,
+        (sum, vote) => sum + vote.points,
         0
       ),
     }))
