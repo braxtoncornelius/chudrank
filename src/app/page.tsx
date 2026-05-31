@@ -4,9 +4,18 @@ import ClientHome from "./client-home";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
   const people = await prisma.person.findMany({
     include: {
-      votesReceived: true,
+      votesReceived: {
+        where: {
+          createdAt: {
+            gte: startOfToday,
+          },
+        },
+      },
     },
   });
 
