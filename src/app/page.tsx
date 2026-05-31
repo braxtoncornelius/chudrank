@@ -4,27 +4,47 @@ import ClientHome from "./client-home";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  // Calculate midnight in America/Chicago
+  // Midnight in Central Time (handles CST/CDT automatically)
   const now = new Date();
 
-  const centralDate = new Date(
+  const centralNow = new Date(
     now.toLocaleString("en-US", {
       timeZone: "America/Chicago",
     })
   );
 
-  centralDate.setHours(0, 0, 0, 0);
+  centralNow.setHours(0, 0, 0, 0);
 
+  const startOfToday = centralNow;
+
+  // Leaderboard data (today only)
   const people = await prisma.person.findMany({
     include: {
       votesReceived: {
         where: {
           createdAt: {
-            gte: centralDate,
+            gte: startOfToday,
           },
         },
       },
     },
+  });
+
+  // Activity feed (today only)
+  const activity = await prisma.vote.findMany({
+    where: {
+      createdAt: {
+        gte: startOfToday,
+      },
+    },
+    include: {
+      actor: true,
+      target: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 50,
   });
 
   const rankings = people
@@ -37,5 +57,10 @@ export default async function Home() {
     }))
     .sort((a, b) => b.score - a.score);
 
-  return <ClientHome people={rankings} />;
+  return (
+    <ClientHome
+      people={rankings}
+      activity={activity}
+    />
+  );
 }
