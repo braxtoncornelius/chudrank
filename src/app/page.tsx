@@ -4,15 +4,23 @@ import ClientHome from "./client-home";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
+  // Calculate midnight in America/Chicago
+  const now = new Date();
+
+  const centralDate = new Date(
+    now.toLocaleString("en-US", {
+      timeZone: "America/Chicago",
+    })
+  );
+
+  centralDate.setHours(0, 0, 0, 0);
 
   const people = await prisma.person.findMany({
     include: {
       votesReceived: {
         where: {
           createdAt: {
-            gte: startOfToday,
+            gte: centralDate,
           },
         },
       },
