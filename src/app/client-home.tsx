@@ -146,9 +146,7 @@ export default function ClientHome({
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-zinc-400 hidden md:block">
-              Switch User
-            </span>
+          
 
             <IdentityPicker
               people={people}
