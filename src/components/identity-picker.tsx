@@ -19,7 +19,7 @@ export function IdentityPicker({
   return (
     <div className="flex items-center gap-3">
       <span className="text-zinc-400">
-        Switch User
+        Choose User
       </span>
 
       <select
