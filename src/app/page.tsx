@@ -4,20 +4,28 @@ import ClientHome from "./client-home";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  // Midnight in Central Time (handles CST/CDT automatically)
   const now = new Date();
 
-  const centralNow = new Date(
+  // Current time in Chicago
+  const chicagoTime = new Date(
     now.toLocaleString("en-US", {
       timeZone: "America/Chicago",
     })
   );
 
-  centralNow.setHours(0, 0, 0, 0);
+  // Midnight Chicago time
+  const startOfToday = new Date(chicagoTime);
+  startOfToday.setHours(0, 0, 0, 0);
 
-  const startOfToday = centralNow;
+  // Debug logs
+  console.log("NOW:", now.toISOString());
+  console.log("CHICAGO:", chicagoTime.toString());
+  console.log(
+    "START OF TODAY:",
+    startOfToday.toString()
+  );
 
-  // Leaderboard data (today only)
+  // Leaderboard scores (today only)
   const people = await prisma.person.findMany({
     include: {
       votesReceived: {
