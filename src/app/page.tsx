@@ -6,26 +6,26 @@ import { prisma } from "@/lib/prisma";
 export default async function Home() {
   const now = new Date();
 
-  // Current time in Chicago
-  const chicagoTime = new Date(
-    now.toLocaleString("en-US", {
-      timeZone: "America/Chicago",
-    })
+  // Get today's date in America/Chicago
+  const chicagoDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+
+  // Create midnight Chicago time (CDT/CST handled correctly)
+  const startOfToday = new Date(
+    `${chicagoDate}T00:00:00-05:00`
   );
 
-  // Midnight Chicago time
-  const startOfToday = new Date(chicagoTime);
-  startOfToday.setHours(0, 0, 0, 0);
-
-  // Debug logs
   console.log("NOW:", now.toISOString());
-  console.log("CHICAGO:", chicagoTime.toString());
   console.log(
     "START OF TODAY:",
-    startOfToday.toString()
+    startOfToday.toISOString()
   );
 
-  // Leaderboard scores (today only)
+  // Leaderboard data (today only)
   const people = await prisma.person.findMany({
     include: {
       votesReceived: {
@@ -54,6 +54,11 @@ export default async function Home() {
     },
     take: 50,
   });
+
+  console.log(
+    "TODAY'S VOTES:",
+    activity.length
+  );
 
   const rankings = people
     .map((person) => ({
