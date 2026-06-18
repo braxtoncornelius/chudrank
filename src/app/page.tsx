@@ -3,6 +3,8 @@ export const dynamic = "force-dynamic";
 import ClientHome from "./client-home";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const now = new Date();
 
